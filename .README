@@ -1,8 +1,0 @@
-# SqlParse
-
-Webservice receive sql and return a parse or tokenization.
-
-## First milestones
-Webservice receives post. Returns "Got it".
-... post with SQL text. Returns same.
-... text. Returns tokenization or some parse artefact.
