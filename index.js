@@ -1,15 +1,27 @@
-var express = require('express');
-var app = express();
+const ChildProcess = require('child_process');
+var app = require('express')();
 var bodyParser = require('body-parser');
+
+var Formatter = {
+  format(sql) {
+    var childProc = ChildProcess.spawn("SqlFormat.exe", ["/h"], {"stdio": 'pipe'});
+    var output;
+    childProc.on("error", function(err) {
+      if (err) { ~
+        console.error(err);
+      }
+    });
+    childProc.on("finish", function(err) {
+      output = childProc.stdout.read();
+    });
+    return output;
+  }
+};
 
 app.use(bodyParser.text());
 
-app.get('/', function(req, res){
-  res.send('Got it!');
-});
-
 app.post("/", function (req, res) {
-  res.send("server got: " + req.body || "Nothing.")
+  res.send(Formatter.format(req.body));
   res.end();
 });
 
