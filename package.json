@@ -1,20 +1,29 @@
 {
-  "name": "sqlparse",
+  "name": "format-tsql",
   "version": "0.1.1",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jasmine"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "antlr4",
+    "Transact SQL",
+    "T-SQL",
+    "SQL Server",
+    "Lexer",
+    "Parser"
+  ],
+  "author": {
+    "name": "Ari Zelanko",
+    "email": "zelanko@gmail.com"
+  },
   "license": "ISC",
   "dependencies": {
     "antlr4": "^4.6.0",
-    "body-parser": "^1.15.2",
-    "express": "^4.14.0"
+    "strict-mode": "^1.0.1"
   },
   "devDependencies": {
-    "antlr4-compile": "0.0.2"
+    "jasmine": "^2.5.2"
   }
 }
