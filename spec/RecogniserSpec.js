@@ -1,4 +1,4 @@
-describe("Formatter", () => {
+describe("Format the simplest SQL", () => {
   var expected,
     formatter,
     incoming;

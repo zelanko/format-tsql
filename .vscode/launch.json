@@ -7,8 +7,8 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "parseIt",
-      "program": "${workspaceRoot}/parseIt.js",
+      "name": "Launch Tests",
+      "program": "${workspaceRoot}/test.js",
       "cwd": "${workspaceRoot}"
     },
     {
