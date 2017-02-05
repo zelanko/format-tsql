@@ -20,10 +20,10 @@
   },
   "license": "ISC",
   "dependencies": {
-    "antlr4": "^4.6.0",
     "strict-mode": "^1.0.1"
   },
   "devDependencies": {
-    "jasmine": "^2.5.2"
+    "gulp": "^3.9.1",
+    "jasmine": "^2.5.3"
   }
 }
