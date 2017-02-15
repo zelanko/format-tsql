@@ -40,22 +40,19 @@ sql_clauses
     ;
 
 sql_clause
-    : dml_clause
-
+    : dml_clause/*
     | ddl_clause
-
     | cfl_statement
-
-    | another_statement
+    | another_statement*/
     ;
 
 // Data Manipulation Language: https://msdn.microsoft.com/en-us/library/ff848766(v=sql.120).aspx
 dml_clause
-    : delete_statement
+    : /*delete_statement
     | insert_statement
-    | select_statement
+    | */select_statement/*
     | update_statement
-    ;
+    */;/*
 
 // Data Definition Language: https://msdn.microsoft.com/en-us/library/ff848799.aspx)
 ddl_clause
@@ -161,12 +158,12 @@ insert_statement_value
     | derived_table
     | execute_statement
     | DEFAULT VALUES
-    ;
+    ;*/
 
 // https://msdn.microsoft.com/en-us/library/ms189499.aspx
 select_statement
     : with_expression? query_expression order_by_clause? for_clause? option_clause? ';'?
-    ;
+    ;/*
 
 // https://msdn.microsoft.com/en-us/library/ms177523.aspx
 update_statement
@@ -332,10 +329,10 @@ cursor_option:
 /* Will visit later
 database_mirroring_option:
      ALTER DATABASE Database Mirroring
-    ;
-*/
+    ; */
 
-date_correlation_optimization_option:
+
+/*date_correlation_optimization_option:
     DATE_CORRELATION_OPTIMIZATION on_off
     ;
 
@@ -377,25 +374,25 @@ mixed_page_allocation_option:
 
 parameterization_option:
      PARAMETERIZATION ( SIMPLE | FORCED )
-    ;
+    ;*/
 
 /* Will visit later
 query_store_options:
     ;
 */
 
-recovery_option:
+/*recovery_option:
      RECOVERY ( FULL | BULK_LOGGED | SIMPLE )
      | TORN_PAGE_DETECTION on_off
      | PAGE_VERIFY ( CHECKSUM | TORN_PAGE_DETECTION | NONE )
-    ;
+    ;*/
 
 /*Will visit later
 remote_data_archive_option:
     ;
 */
 
-service_broker_option:
+/*service_broker_option:
     ENABLE_BROKER  
     | DISABLE_BROKER  
     | NEW_BROKER  
@@ -568,12 +565,12 @@ transaction_statement
     | ROLLBACK WORK? ';'?
     // https://msdn.microsoft.com/en-us/library/ms188378.aspx
     | SAVE (TRAN | TRANSACTION) (id | LOCAL_ID)? ';'?
-    ;
+    ;*/
 
 // https://msdn.microsoft.com/en-us/library/ms188037.aspx
 go_statement
     : GO (count=DECIMAL)?
-    ;
+    ;/*
 
 // https://msdn.microsoft.com/en-us/library/ms188366.aspx
 use_statement
@@ -667,7 +664,7 @@ set_special
     | SET ANSI_NULLS on_off
     | SET QUOTED_IDENTIFIER on_off
     | SET ANSI_PADDING on_off
-    ;
+    ;*/
 
 constant_LOCAL_ID
     : constant
@@ -721,10 +718,10 @@ with_expression
     ;
 
 common_table_expression
-    : expression_name=id ('(' column_ name_list ')')? AS '(' select_statement ')'
+    : expression_name=id ('(' column_name_list ')')? AS '(' select_statement ')'
     ;
 
-update_elem
+/*update_elem
     : (full_column_name | LOCAL_ID) ('=' | assignment_operator) expression
     | udt_column_name=id '.' method_name=id '(' expression_list ')'
     //| full_column_name '.' WRITE (expression, )
