@@ -162,7 +162,7 @@ insert_statement_value
 
 // https://msdn.microsoft.com/en-us/library/ms189499.aspx
 select_statement
-    : with_expression? query_expression order_by_clause? for_clause? option_clause? ';'?
+    :/* with_expression?*/ query_expression order_by_clause? /*for_clause? option_clause?* ';'?*/
     ;/*
 
 // https://msdn.microsoft.com/en-us/library/ms177523.aspx
@@ -664,12 +664,12 @@ set_special
     | SET ANSI_NULLS on_off
     | SET QUOTED_IDENTIFIER on_off
     | SET ANSI_PADDING on_off
-    ;*/
+    ;
 
 constant_LOCAL_ID
     : constant
     | LOCAL_ID
-    ;
+    ;*/
 
 // Expression.
 
@@ -680,7 +680,7 @@ expression
     | NULL                                                     #primitive_expression
     | LOCAL_ID                                                 #primitive_expression
     | constant                                                 #primitive_expression
-    | function_call                                            #function_call_expression
+    // | function_call                                            #function_call_expression
     | expression COLLATE id                                    #function_call_expression
     // https://msdn.microsoft.com/en-us/library/ms181765.aspx
     | CASE caseExpr=expression switch_section+ (ELSE elseExpr=expression)? END   #case_expression
@@ -710,7 +710,7 @@ constant_expression
 
 subquery
     : select_statement
-    ;
+    ;/*
 
 // https://msdn.microsoft.com/en-us/library/ms175972.aspx
 with_expression
@@ -721,7 +721,7 @@ common_table_expression
     : expression_name=id ('(' column_name_list ')')? AS '(' select_statement ')'
     ;
 
-/*update_elem
+update_elem
     : (full_column_name | LOCAL_ID) ('=' | assignment_operator) expression
     | udt_column_name=id '.' method_name=id '(' expression_list ')'
     //| full_column_name '.' WRITE (expression, )
@@ -730,7 +730,7 @@ common_table_expression
 // https://msdn.microsoft.com/en-us/library/ms173545.aspx
 search_condition_list
     : search_condition (',' search_condition)*
-    ;
+    ;*/
 
 search_condition
     : search_condition_and (OR search_condition_and)*
@@ -781,7 +781,7 @@ query_specification
 order_by_clause
     : ORDER BY order_by_expression (',' order_by_expression)*
       (OFFSET expression (ROW | ROWS) (FETCH (FIRST | NEXT) expression (ROW | ROWS) ONLY)?)?
-    ;
+    ;/*
 
 // https://msdn.microsoft.com/en-us/library/ms173812.aspx
 for_clause
@@ -792,7 +792,7 @@ for_clause
 
 xml_common_directives
     : ',' (BINARY BASE64 | TYPE | ROOT)
-    ;
+    ;*/
 
 order_by_expression
     : expression (ASC | DESC)?
@@ -800,11 +800,11 @@ order_by_expression
 
 group_by_item
     : expression
-    /*| rollup_spec
-    | cube_spec
-    | grouping_sets_spec
-    | grand_total*/
-    ;
+    // | rollup_spec
+    // | cube_spec
+    // | grouping_sets_spec
+    // | grand_total
+    ;/*
 
 option_clause
     // https://msdn.microsoft.com/en-us/library/ms181714.aspx
@@ -833,7 +833,7 @@ option
 
 optimize_for_arg
     : LOCAL_ID (UNKNOWN | '=' constant)
-    ;
+    ;*/
 
 // https://msdn.microsoft.com/en-us/library/ms176104.aspx
 select_list
@@ -886,7 +886,7 @@ join_part
     ;
 
 table_name_with_hint
-    : table_name with_table_hints?
+    : table_name //with_table_hints?
     ;
 
 // https://msdn.microsoft.com/en-us/library/ms190312.aspx
@@ -958,8 +958,8 @@ as_table_alias
     ;
 
 table_alias
-    : id with_table_hints?
-    ;
+    : id //with_table_hints?
+    ;/*
 
 // https://msdn.microsoft.com/en-us/library/ms187373.aspx
 with_table_hints
@@ -986,7 +986,7 @@ table_hint
 
 index_value
     : id | DECIMAL
-    ;
+    ;*/
 
 column_alias_list
     : '(' column_alias (',' column_alias)* ')'
@@ -996,10 +996,10 @@ column_alias
     : id
     | STRING
     ;
-
+/*
 table_value_constructor
     : VALUES '(' expression_list ')' (',' '(' expression_list ')')*
-    ;
+    ;*/
 
 expression_list
     : expression (',' expression)*
@@ -1055,7 +1055,7 @@ window_frame_following
     : UNBOUNDED FOLLOWING
     | DECIMAL FOLLOWING
     ;
-
+/*
 create_database_option:
     FILESTREAM ( database_filestream_option (',' database_filestream_option)* )
     | DEFAULT_LANGUAGE EQUAL ( id | STRING )
@@ -1095,7 +1095,7 @@ file_spec
       ( MAXSIZE EQUAL (file_size | UNLIMITED )','? )?
       ( FILEGROWTH EQUAL file_size ','? )?
       RR_BRACKET
-    ;
+    ;*/
 
 // Primitive.
 
@@ -1115,12 +1115,12 @@ simple_name
 
 func_proc_name
     : (database=id '.' (schema=id)? '.' | (schema=id) '.')? procedure=id
-    ;
+    ;/*
 
 ddl_object
     : full_table_name
     | LOCAL_ID
-    ;
+    ;*/
 
 full_column_name
     : (table_name '.')? id
@@ -1128,7 +1128,7 @@ full_column_name
 
 column_name_list
     : id (',' id)*
-    ;
+    ;/*
 
 cursor_name
     : id
@@ -1143,7 +1143,7 @@ on_off
 clustered
     : CLUSTERED
     | NONCLUSTERED
-    ;
+    ;*/
 
 null_notnull
     : NOT? NULL
@@ -1160,7 +1160,7 @@ scalar_function_name
 // https://msdn.microsoft.com/en-us/library/ms187752.aspx
 // TODO: implement runtime check or add new tokens.
 data_type
-    /*: BIGINT
+    : BIGINT
     | BINARY '(' DECIMAL ')'
     | BIT
     | CHAR '(' DECIMAL ')'
@@ -1193,7 +1193,7 @@ data_type
     | VARBINARY '(' DECIMAL | MAX ')'
     | VARCHAR '(' DECIMAL | MAX ')'
     | XML*/
-    : id IDENTITY? ('(' (DECIMAL | MAX) (',' DECIMAL)? ')')?
+    | id IDENTITY? ('(' (DECIMAL | MAX) (',' DECIMAL)? ')')?
     ;
 
 default_value
@@ -1814,6 +1814,34 @@ BIT_NOT:             '~';
 BIT_OR:              '|';
 BIT_AND:             '&';
 BIT_XOR:             '^';
+
+BIGINT: B I G I N T;
+BIT: B I T;
+CHAR: C H A R;
+DATE: D A T E;
+DATETIME: D A T E T I M E;
+DATETIME2: D A T E T I M E '2';
+DATETIMEOFFSET : D A T E T I M E O F F S E T;
+GEOGRAPHY: G E O G R A P H Y;
+GEOMETRY: G E O M E T R Y;
+HIERARCHYID: H I E R A R C H Y I D;
+IMAGE: I M A G E;
+INT: I N T;
+MONEY: M O N E Y;
+NCHAR: N C H A R;
+NTEXT: N T E X T;
+NUMERIC: N U M E R I C;
+NVARCHAR: N V A R C H A R; 
+SMALLDATETIME: S M A L L D A T E T I M E;
+SMALLINT: S M A L L I N T;
+SMALLMONEY: S M A L L M O N E Y;
+SQL_VARIANT: S Q L '_' V A R I A N T;
+TEXT: T E X T;
+TIMESTAMP: T I M E S T A M P ;
+TINYINT: T I N Y I N T;
+UNIQUEIDENTIFIER: U N I Q U E I D E N T I F I E R;
+VARBINARY: V A R B I N A R Y;
+VARCHAR: V A R C H A R;
 
 fragment LETTER:       [a-zA-Z_];
 fragment DEC_DOT_DEC:  (DEC_DIGIT+ '.' DEC_DIGIT+ |  DEC_DIGIT+ '.' | '.' DEC_DIGIT+);
