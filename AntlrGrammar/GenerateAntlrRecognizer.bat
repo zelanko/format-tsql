@@ -11,4 +11,12 @@ REM If the prerequisites are good, just run this batch file to generate the antl
 
 REM Only set the path locally
 SETLOCAL
-java -classpath .\antlr4-4.6-complete.jar org.antlr.v4.Tool -Dlanguage=JavaScript tsql.g4
+
+REM path to antlr4 jar
+REM change it for where you have the jar
+SET ANTLR4=.\AntlrGenerated\antlr-4.6.0-complete.jar
+
+SET CLASSPATH=.;%ANTLR4%;%CLASSPATH%
+PUSHD lib
+java org.antlr.v4.Tool -Dlanguage=JavaScript tsql.g4
+POPD
