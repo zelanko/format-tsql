@@ -50,7 +50,7 @@ class CustomParseListener extends AntlrParseListener {
 
 
     for (const index in ctx.children) {
-      if (ctx.children[index] instanceof TerminalNode.prototype) {
+      if (ctx.children[index] instanceof TerminalNode) {
         const terminalNode = ctx.children[index];
 
         switch (terminalNode.symbol.type) {
@@ -95,18 +95,8 @@ class CustomParseListener extends AntlrParseListener {
   // }
 
   visitTerminal(node) {
-    const parse = this.parser;
-
-    switch (node.symbol.type) {
-      case parse.AND:
-      case parse.ALTER:
-      case parse.SELECT:
-      case parse.CASE:  
-        node.outputString = this.parser.symbolicNames[node.symbol.type];
-        break;
-      default:
-    }
-  }
+    console.log(node);
+  };
 
   visitErrorNode(node) {
   }
