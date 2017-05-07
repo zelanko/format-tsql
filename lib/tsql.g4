@@ -721,7 +721,7 @@ with_expression
     ;
 
 common_table_expression
-    : expression_name=id ('(' column_ name_list ')')? AS '(' select_statement ')'
+    : expression_name=id ('(' column_name_list ')')? AS '(' select_statement ')'
     ;
 
 update_elem
