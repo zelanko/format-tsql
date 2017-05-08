@@ -3,8 +3,8 @@
 const tsqlFormatModule = require('../index');
 
 const tests = [
-  ['select A as [Yuba dubba]', 'SELECT A AS [Yuba dubba];'],
-  ['sElEct A, B C', 'SELECT A,\n  B AS C;']
+  ['Select one column with alias', 'select A as [Yuba dubba]', 'SELECT A AS [Yuba dubba];'],
+  ['Casing, column alias, column per line.', 'sElEct A, B C', 'SELECT A,\n  B AS C;']
 ];
 
 describe("import/require yields expected module.",
@@ -23,18 +23,19 @@ describe("import/require yields expected module.",
 
 const format = tsqlFormatModule.format;
 
-describe("Format as expected",
+describe("Format Basic SELECT",
   () => {
     tests.forEach(
       (testSpec) => {
-        let original = testSpec[0];
-        let expected = testSpec[1];
-        it(`renders '${original}' as ...\n${expected}`,
+        let testCase = testSpec[0];
+        let original = testSpec[1];
+        let expected = testSpec[2];
+        it(testCase,
           () => {
             var formattedSql = format(original);
-            expect(formattedSql).not.toBeUndefined();
+            expect(formattedSql).toBeDefined();
             expect(formattedSql).not.toBeNull();
-            expect(formattedSql).toEqual(expected);
+            expect(formattedSql).toBe(expected);
           }
         );
       }
