@@ -1,22 +1,44 @@
-describe("Format the simplest SQL", () => {
-  var expected,
-    formatter,
-    incoming;
+"use strict";
 
-  incoming = 'select A as [Yuba dubba]';
-  expected = 'SELECT A AS [Yuba dubba];';
-  formatter = require('../index');
+const tsqlFormatModule = require('../index');
 
-  it("has a format function", () => {
-    expect(formatter).not.toBeUndefined();
-    expect(formatter.format).not.toBeUndefined();
-    expect(typeof formatter.format).toEqual("function");
-  });
+const tests = [
+  ['Select one column with alias', 'select A as [Yuba dubba]', 'SELECT A AS [Yuba dubba];'],
+  ['Casing, column alias, column per line.', 'sElEct A, B C', 'SELECT A,\n  B AS C;']
+];
 
-  it(`Formats '${incoming}' as '${expected}'`, () => {
-    var formattedSql = formatter.format(incoming);
-    expect(formattedSql).not.toBeUndefined();
-    expect(formattedSql).not.toBeNull();
-    expect(formattedSql).toEqual(expected);
-  });
-});
+describe("import/require yields expected module.",
+  () => {
+    it("has a format function",
+      () => {
+        expect(tsqlFormatModule).not.toBeNull();
+        expect(tsqlFormatModule).toBeDefined();
+        expect(tsqlFormatModule.format).not.toBeNull();
+        expect(tsqlFormatModule.format).toBeDefined()
+        expect(typeof tsqlFormatModule.format).toBe("function");
+      }
+    );
+  }
+)
+
+const format = tsqlFormatModule.format;
+
+describe("Format Basic SELECT",
+  () => {
+    tests.forEach(
+      (testSpec) => {
+        let testCase = testSpec[0];
+        let original = testSpec[1];
+        let expected = testSpec[2];
+        it(testCase,
+          () => {
+            var formattedSql = format(original);
+            expect(formattedSql).toBeDefined();
+            expect(formattedSql).not.toBeNull();
+            expect(formattedSql).toBe(expected);
+          }
+        );
+      }
+    );
+  }
+);
