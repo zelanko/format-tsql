@@ -7,7 +7,10 @@ const tsqlLexer = require('./lib/tsqlLexer').tsqlLexer;
 const tsqlParser = require("./lib/tsqlParser").tsqlParser;
 const tsqlListener = require("./lib/tsqlListener").tsqlListener;
 
-class CustomListener extends tsqlListener {
+const SPACE = " ";
+const NEWLINE = "\n";
+
+class CustomListener extends require("./lib/tsqlListener").tsqlListener {
   constructor() {
     super();
     this.outgoingValue = [[]];
@@ -20,11 +23,59 @@ class CustomListener extends tsqlListener {
   }
 
   getFormattedText() {
-    this.outgoingValue.forEach((element, index, array) => array[index] = element.join(" "));
-    return this.outgoingValue.join("\n");
+    this.outgoingValue.forEach((element, index, array) => array[index] = element.join(SPACE));
+    return this.outgoingValue.join(NEWLINE);
   }
   
-  exitQuery_specification(ctx) {
+  formatSelectListElements(selectList) {
+    selectList.select_list_elem().forEach(
+      (value, index, array) => {
+        if (index !== 0) {
+          this.currentLine.push(SPACE);
+        }
+
+        this.currentLine.push(value.expression().getText());
+
+        let lastElement = !!(array.length === index + 1);
+        let aliasCxt = value.column_alias();
+        if (aliasCxt !== null) {
+          this.currentLine.push("AS", aliasCxt.getText());
+        }
+
+        if (!lastElement) {
+          this.currentLine.push(this.currentLine.pop() + ",");
+          this.newOutputLine();
+        }
+      }
+    );
+  }
+
+  formatTable_sources(table_sources) {
+    table_sources.table_source().forEach(
+      (table_sourceCtx, index, array) => {
+        if (index !== 0) {
+          this.currentLine.push(SPACE);
+        }
+        const x = table_sourceCtx.table_source_item_joined().table_source_item();
+        const tableName = x.table_name_with_hint().table_name();
+        this.currentLine.push(tableName.getText());
+
+
+        let lastElement = !!(array.length === index + 1);
+        if (x.as_table_alias()) {
+          const alias = x.as_table_alias().table_alias().id().simple_id().ID();
+          //TODO keep quotes or brackets
+          this.currentLine.push(alias)
+        }  
+        if (!lastElement) {
+          this.currentLine.push(this.currentLine.pop() + ",");
+          this.newOutputLine();
+        }
+      }
+    );
+  }
+
+exitQuery_specification(ctx) {
     this.currentLine.push("SELECT");
 
     let tALL = ctx.ALL();
@@ -37,32 +88,13 @@ class CustomListener extends tsqlListener {
       this.currentLine.push("TOP");
     }
 
-    let selectList = ctx.select_list().select_list_elem();
+    this.formatSelectListElements(ctx.select_list());
 
-    let indent = "";
-    selectList.forEach(
-      (value, index, array) => {
-        let columnDef = value.expression().getText();
-
-        if (indent === " ") {
-          this.currentLine.push(indent, columnDef);
-        }
-        else {
-          this.currentLine.push(columnDef);
-          indent = " ";
-        }
-
-        let aliasCxt = value.column_alias();        
-        if (aliasCxt) {
-          this.currentLine.push("AS", aliasCxt.getText());
-        }
-
-        if (index !== array.length - 1) {
-          this.currentLine.push(this.currentLine.pop() + ",");
-          this.newOutputLine();
-        }
-      }  
-    );
+    if (ctx.FROM() !== null) {
+      this.newOutputLine();
+      this.currentLine.push("FROM")
+      this.formatTable_sources(ctx.table_sources())
+    }
 
     this.currentLine.push(this.currentLine.pop()+";");
   }
