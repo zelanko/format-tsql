@@ -10,7 +10,7 @@ const tsqlListener = require("./lib/tsqlListener").tsqlListener;
 const SPACE = " ";
 const NEWLINE = "\n";
 
-class CustomListener extends require("./lib/tsqlListener").tsqlListener {
+class CustomListener extends tsqlListener {
   constructor() {
     super();
     this.outgoingValue = [[]];
