@@ -61,8 +61,48 @@ class CustomListener extends tsqlListener {
           this.currentLine.push(this.currentLine.pop() + ",");
           this.newOutputLine();
         }
-      }  
+      }
     );
+
+    //(FROM table_sources)?
+    let tFROM = ctx.FROM();
+    if (tFROM) {
+
+      this.newOutputLine();
+      this.currentLine.push("FROM")
+
+      const TABLE_SOURCE_ITEM = ctx
+        .table_sources()
+        .table_source(0)
+        .table_source_item_joined()
+        .table_source_item();
+        
+      const fromTable = TABLE_SOURCE_ITEM
+        .table_name_with_hint()
+        .table_name();
+      
+      let tableName = fromTable.table.simple_id().ID().toString();
+    
+      if (fromTable.database) {
+        let databaseName = fromTable.database.simple_id().ID().toString();
+        let schemaName = fromTable.schema.simple_id().ID().toString();
+        this.currentLine.push(`${databaseName}.${schemaName}.${tableName}`);
+      }
+      else if (fromTable.schema) {
+        let schemaName = fromTable.schema.simple_id().ID().toString();
+        this.currentLine.push(`${schemaName}.${tableName}`);
+      }
+      else {
+        this.currentLine.push(tableName);
+      }
+      const alias = TABLE_SOURCE_ITEM
+        .as_table_alias();
+      if (alias) {
+        this.currentLine.push(alias.table_alias().id().simple_id().ID().toString());
+      }
+
+
+    }
 
     this.currentLine.push(this.currentLine.pop()+";");
   }
@@ -81,10 +121,10 @@ const DEFAULT = antlr4.tree.ParseTreeWalker.DEFAULT;
 
 module.exports = {
   format: function (sql) {
-    const tree = parse(sql);
+    const parseTree = parse(sql);
     const listener = new CustomListener();
 
-    DEFAULT.walk(listener, tree);
+    DEFAULT.walk(listener, parseTree);
 
     return listener.getFormattedText();
   }

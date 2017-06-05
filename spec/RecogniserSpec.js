@@ -4,7 +4,10 @@ const tsqlFormatModule = require('../index');
 
 const tests = [
   ['Select one column with alias', 'select A as [Yuba dubba]', 'SELECT A AS [Yuba dubba];'],
-  ['Casing, column alias, column per line.', 'sElEct A, B C', 'SELECT A,\n  B AS C;']
+  ['Casing, column alias, column per line.', 'sElEct A, B C', 'SELECT A,\n  B AS C;'],
+  ['Simple FROM', 'select Col1, Col2 from ATable', 'SELECT Col1,\n  Col2\nFROM ATable;'],
+  ['Simple FROM with table alias', 'select Col1, Col2 from ATable atbl', 'SELECT Col1,\n  Col2\nFROM ATable atbl;'],
+  ['Remove "as" from table AS alias', 'select Col1, Col2 from ATable as atbl', 'SELECT Col1,\n  Col2\nFROM ATable atbl;']
 ];
 
 describe("import/require yields expected module.",
