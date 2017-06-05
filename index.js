@@ -27,16 +27,6 @@ class CustomListener extends tsqlListener {
   exitQuery_specification(ctx) {
     this.currentLine.push("SELECT");
 
-    let tALL = ctx.ALL();
-    if (tALL) {
-      this.currentLine.push("ALL");
-    }
-
-    let tTOP = ctx.TOP();
-    if (tTOP) {
-      this.currentLine.push("TOP");
-    }
-
     let selectList = ctx.select_list().select_list_elem();
 
     let indent = "";
